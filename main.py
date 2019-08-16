@@ -33,16 +33,32 @@ def colorDistance(color1, color2):
     return math.sqrt(dr2+dg2+db2)
 
 def getClusterCenters(width, height, k):
-    clusterCenters = []
+    clusterCenters = {}
     for i in range(k):
-        x = random.randint(0, width)
-        y = random.randint(0, height)
+        x = random.randint(0, width-1)
+        y = random.randint(0, height-1)
         if (x, y) not in clusterCenters:
-            clusterCenters.append((x, y))
+            clusterCenters[(x, y)] = []
+    print(clusterCenters)
+    return clusterCenters
+
+def assignPixelsToCenters(img, clusterCenters):
+    pixels = img.load()
+    for i in range(img.size[0]):
+        for j in range(img.size[1]):
+            shortestDistance = 442
+            for k in clusterCenters:
+                dist = colorDistance(pixels[i,j], pixels[k[0],k[1]])
+                if dist < shortestDistance:
+                    cluster = k
+                    shortestDistance = dist
+            clusterCenters[cluster].append((i,j))
+    print(clusterCenters)
     return clusterCenters
 
 def clusterColors(img, k):
     clusterCenters = getClusterCenters(img.size[0], img.size[1], k)
+    clusters = assignPixelsToCenters(img, clusterCenters)
 
 
 if __name__ == "__main__":
