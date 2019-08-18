@@ -37,7 +37,7 @@ class ColorClusterer:
         print(clusterWidth)
         clusterHeight = math.floor(k/clusterWidth)
         print(clusterHeight)
-
+        # TODO: change this to be more precise initialization
 
 
     def __colorDistance(self, color1, color2):
@@ -76,3 +76,4 @@ class ColorClusterer:
                 b.append(color[2])
             newClusters[(mean(r), mean(g), mean(b))] = []
         return newClusters
+        # TODO: make sure colors are not too close together
