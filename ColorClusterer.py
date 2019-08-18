@@ -7,17 +7,20 @@ class ColorClusterer:
         pass
 
     def clusterColors(self, img, k, iterations):
-        clusterCenters = self.__getClusterCenters(img, k)
+        clusterCenters = self.__getRandomClusterCenters(img, k)
+        self.__getSetClusterCenters(img, k)
         for i in range(iterations):
             clusters = self.__assignPixelsToCenters(img, clusterCenters)
             clusterCenters = self.__recenterClusters(clusters, img)
         clusters = self.__assignPixelsToCenters(img, clusterCenters)
+        """
         print(clusters)
         for k in clusters:
             print(len(clusters[k]))
+        """
         return clusters
 
-    def __getClusterCenters(self, img, k):
+    def __getRandomClusterCenters(self, img, k):
         pixels = img.load()
         clusterCenters = {}
         for i in range(k):
@@ -26,6 +29,16 @@ class ColorClusterer:
             if pixels[x, y] not in clusterCenters:
                 clusterCenters[pixels[x, y]] = []
         return clusterCenters
+
+    def __getSetClusterCenters(self, img, k):
+        prop = float(img.width)/float(img.width+img.height)
+        print(prop)
+        clusterWidth = math.floor(prop*k)
+        print(clusterWidth)
+        clusterHeight = math.floor(k/clusterWidth)
+        print(clusterHeight)
+
+
 
     def __colorDistance(self, color1, color2):
         dr = color2[0] - color1[0]

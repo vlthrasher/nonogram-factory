@@ -36,10 +36,10 @@ class ImageAdjuster:
                 pixels[pixel[0], pixel[1]] = color
         return img
 
-    def adjustImage(self, fileName):
+    def adjustImage(self, fileName, maxSize, clusterCount, iterations):
         img = self.__openImage(fileName)
         if img:
-            img = self.__resizeImage(img, 20)
-            clusters = self.clusterer.clusterColors(img, 7, 5)
+            img = self.__resizeImage(img, maxSize)
+            clusters = self.clusterer.clusterColors(img, clusterCount, iterations)
             img = self.__recolorImage(img, clusters)
         return img
