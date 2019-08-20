@@ -1,8 +1,11 @@
 import operator
+import ImageGenerator
+
 
 class Displayer:
     def __init__(self, img):
         self.img = img
+        self.ig = ImageGenerator.ImageGenerator()
 
     def __findDefaultColor(self):
         pixels = self.img.load()
@@ -58,9 +61,13 @@ class Displayer:
             labels.append(rowLabel)
         return labels
 
-    def gatherBorderLabels(self):
+    def __gatherBorderLabels(self):
         self.defaultColor = self.__findDefaultColor()
         #print(self.defaultColor)
         #print("--------------------")
         self.columnLabels = self.__getColumnLabels()
         self.rowLabels = self.__getRowLabels()
+
+    def generatePuzzle(self):
+        self.__gatherBorderLabels()
+        puzzle = self.ig.generatePuzzle(self.rowLabels, self.columnLabels, self.defaultColor)
