@@ -7,10 +7,44 @@ class ColorSet:
     def getColors(self):
         return self.colors.keys()
 
+    def getColorName(self, color):
+        if color in self.colors:
+            return self.colors[color]
+        else:
+            return ""
+
+class BW(ColorSet):
+    def __init__(self):
+        super().__init__()
+        self.colors[(0,0,0)] = "black"
+        self.colors[(255,255,255)] = "white"
+
+class Grayscale(ColorSet):
+    def __init__(self):
+        super().__init__()
+        self.colors[(0,0,0)] = "black"
+        self.colors[(15,15,15)] = "practically black"
+        self.colors[(30,30,30)] = "almost black"
+        self.colors[(45,45,45)] = "extra dark"
+        self.colors[(60,60,60)] = "super dark"
+        self.colors[(75,75,75)] = "really dark"
+        self.colors[(90,90,90)] = "dark grey"
+        self.colors[(105,105,105)] = "pretty dark"
+        self.colors[(120,120,120)] = "almost dark"
+        self.colors[(130,130,130)] = "grey"
+        self.colors[(145,145,145)] = "almost light"
+        self.colors[(160,160,160)] = "pretty light"
+        self.colors[(175,175,175)] = "light grey"
+        self.colors[(190,190,190)] = "really light"
+        self.colors[(205,205,205)] = "super light"
+        self.colors[(220,220,220)] = "extra light"
+        self.colors[(235,235,235)] = "almost white"
+        self.colors[(245,245,245)] = "practically white"
+        self.colors[(255,255,255)] = "white"
+
 class Crayola12(ColorSet):
     def __init__(self):
         super().__init__()
-        self.colors = {}
         self.colors[(237, 10, 63)] = "red"
         self.colors[(255, 63, 52)] = "red_orange"
         self.colors[(255, 134, 31)] = "orange"
