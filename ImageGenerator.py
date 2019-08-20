@@ -32,6 +32,7 @@ class ImageGenerator:
         self.grid_ul = ul
 
     def __drawRowLabels(self):
+        #TODO: Add bolded lines every 5 boxes for separation
         ul = self.grid_ul
         ul = (ul[0]- self.BOX_SIZE, ul[1])
         lr = (ul[0] + self.BOX_SIZE, ul[1] + self.BOX_SIZE)
@@ -52,6 +53,7 @@ class ImageGenerator:
             lr = (ul[0] + self.BOX_SIZE, ul[1] + self.BOX_SIZE)
 
     def __drawColumnLabels(self):
+        #TODO: Add bolded lines every 5 boxes for separation
         ul = self.grid_ul
         ul = (ul[0], ul[1]-self.BOX_SIZE)
         lr = (ul[0]+self.BOX_SIZE, ul[1]+self.BOX_SIZE)
@@ -95,6 +97,7 @@ class ImageGenerator:
         lr = (ul[0]+width, ul[1]+boxHeight)
         fnt = ImageFont.truetype('/Library/Fonts/Arial.ttf', boxHeight)
         for color in allColors:
+            #TODO: add color names to boxes if possible
             self.drawer.rectangle([ul, lr], fill=color, outline=(255,255,255), width=3)
             w, h = self.drawer.textsize("*", font=fnt)
             if sum(color) > 382:
