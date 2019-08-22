@@ -1,5 +1,6 @@
 from PIL import Image, ImageDraw, ImageFont
 from math import floor
+import Colors
 
 class ImageGenerator:
     def __init__(self):
@@ -88,30 +89,39 @@ class ImageGenerator:
                 allColors.add(lab[0])
         return allColors
 
-    def __drawColorKey(self):
+    def __drawColorKey(self, colorSet=None):
         width = self.grid_ul[0]-self.WIDTH_BUFFER-self.PUZZLE_BUFFER
         height = self.grid_ul[1]-self.HEIGHT_BUFFER-self.PUZZLE_BUFFER
         allColors = self.__getAllColors()
         boxHeight = floor(float(height)/float(len(allColors)))
         ul = (self.WIDTH_BUFFER, self.HEIGHT_BUFFER)
         lr = (ul[0]+width, ul[1]+boxHeight)
-        fnt = ImageFont.truetype('/Library/Fonts/Arial.ttf', boxHeight)
+        fnt = ImageFont.truetype('/Library/Fonts/Arial.ttf', boxHeight-5)
         for color in allColors:
-            #TODO: add color names to boxes if possible
             self.drawer.rectangle([ul, lr], fill=color, outline=(255,255,255), width=3)
-            w, h = self.drawer.textsize("*", font=fnt)
             if sum(color) > 382:
                 textColor = (0, 0, 0)
             else:
                 textColor = (255, 255, 255)
-            if color == self.defaultColor:
-
-                self.drawer.text((ul[0] + ((width - w) / 2), ul[1] + ((boxHeight - h) / 2)), "*",
-                                 font=fnt, fill=textColor, align="center")
+            # TODO: change font size if the color name is too long
+            if colorSet:
+                if color == self.defaultColor:
+                    w, h = self.drawer.textsize("*"+colorSet.getColorName(color), font=fnt)
+                    self.drawer.text((ul[0] + ((width - w) / 2), ul[1] + ((boxHeight - h) / 2)),
+                                     "*"+colorSet.getColorName(color), font=fnt, fill=textColor, align="center")
+                else:
+                    w, h = self.drawer.textsize(colorSet.getColorName(color), font=fnt)
+                    self.drawer.text((ul[0] + ((width - w) / 2), ul[1] + ((boxHeight - h) / 2)),
+                                     colorSet.getColorName(color), font=fnt, fill=textColor, align="center")
+            else:
+                if color == self.defaultColor:
+                    w, h = self.drawer.textsize("*", font=fnt)
+                    self.drawer.text((ul[0] + ((width - w) / 2), ul[1] + ((boxHeight - h) / 2)), "*",
+                                     font=fnt, fill=textColor, align="center")
             ul = (ul[0], ul[1]+boxHeight)
             lr = (lr[0], lr[1]+boxHeight)
 
-    def __drawPuzzle(self):
+    def __drawPuzzle(self, colorSet=None):
         totalRows, totalColumns, maxRow, maxColumn = self.__findDims()
         print(maxRow, maxColumn)
         self.img = Image.new('RGB', ((((totalColumns + maxRow) * self.BOX_SIZE) + 2 * self.WIDTH_BUFFER),
@@ -120,9 +130,9 @@ class ImageGenerator:
         print(self.img.size)
         self.__drawGrid(totalRows, totalColumns, maxRow, maxColumn)
         self.__drawLabels(totalRows, totalColumns, maxRow, maxColumn)
-        self.__drawColorKey()
+        self.__drawColorKey(colorSet)
 
-    def generatePuzzle(self, rowLabels, columnLabels, defaultColor):
+    def generatePuzzle(self, rowLabels, columnLabels, defaultColor, colorSet=None):
         self.WIDTH_BUFFER = 100
         self.HEIGHT_BUFFER = 100
         self.BOX_SIZE = 50
@@ -130,7 +140,7 @@ class ImageGenerator:
         self.rowLabels = rowLabels
         self.columnLabels = columnLabels
         self.defaultColor = defaultColor
-        self.__drawPuzzle()
+        self.__drawPuzzle(colorSet)
 
 
         """

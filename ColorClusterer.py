@@ -25,7 +25,7 @@ class ColorClusterer:
         return closestColor
 
     def __quantizeColors(self, img, colorSet):
-        img.show()
+        #img.show()
         img = img.copy()
         pixels = img.load()
         colorCounts = {}
@@ -37,7 +37,7 @@ class ColorClusterer:
                 else:
                     colorCounts[closestColor] = 1
                 pixels[i,j] = closestColor
-        img.show()
+        #img.show()
         return img, colorCounts
 
     def __initializeClusters(self, img, k, colorSet=None):

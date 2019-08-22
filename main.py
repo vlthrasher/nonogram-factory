@@ -7,7 +7,8 @@ import Colors
 if __name__ == "__main__":
     FILENAME = "./Images/silks.jpg"
     adjuster = ImageAdjuster.ImageAdjuster()
-    img = adjuster.adjustImage(FILENAME, maxSize=20, clusterCount=5, iterations=5, colorSet=Colors.Crayola12())
+    colorSet = Colors.Crayola24()
+    img = adjuster.adjustImage(FILENAME, maxSize=20, clusterCount=7, iterations=5, colorSet=colorSet)
     img.show()
     displayer = Displayer.Displayer(img)
-    displayer.generatePuzzle()
+    displayer.generatePuzzle(colorSet)
