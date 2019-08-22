@@ -19,7 +19,7 @@ class BW(ColorSet):
         self.colors[(0,0,0)] = "black"
         self.colors[(255,255,255)] = "white"
 
-class Grayscale(ColorSet):
+class Greyscale(ColorSet):
     def __init__(self):
         super().__init__()
         self.colors[(0,0,0)] = "black"

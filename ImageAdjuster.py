@@ -27,7 +27,6 @@ class ImageAdjuster:
         img = img.resize((newWidth, newHeight))
         return img
 
-
     def __recolorImage(self, img, clusters):
         pixels = img.load()
         for k in clusters:
@@ -36,10 +35,10 @@ class ImageAdjuster:
                 pixels[pixel[0], pixel[1]] = color
         return img
 
-    def adjustImage(self, fileName, maxSize, clusterCount, iterations):
+    def adjustImage(self, fileName, maxSize, clusterCount, iterations, colorSet):
         img = self.__openImage(fileName)
         if img:
-            img = self.__resizeImage(img, maxSize)
-            clusters = self.clusterer.clusterColors(img, clusterCount, iterations)
+            img = self.__resizeImage(img, maxSize, )
+            clusters = self.clusterer.clusterColors(img, clusterCount, iterations, colorSet)
             img = self.__recolorImage(img, clusters)
         return img
