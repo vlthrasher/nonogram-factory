@@ -1,6 +1,9 @@
 import math
 import random
 from statistics import mean
+from colormath.color_objects import sRGBColor, LabColor
+from colormath.color_diff import delta_e_cmc, delta_e_cie2000
+from colormath.color_conversions import convert_color
 
 class ColorClusterer:
     def __init__(self):
@@ -37,7 +40,6 @@ class ColorClusterer:
                 else:
                     colorCounts[closestColor] = 1
                 pixels[i,j] = closestColor
-        #img.show()
         return img, colorCounts
 
     def __initializeClusters(self, img, k, colorSet=None):
@@ -81,7 +83,18 @@ class ColorClusterer:
 
 
     def __colorDistance(self, color1, color2):
-        # TODO: use cieluv
+        #return self.__euclidean_distance(color1, color2)
+        return self.__cmc_distance(color1, color2)
+
+    def __cmc_distance(self, color1, color2):
+        color1 = sRGBColor(color1[0], color1[1], color1[2], is_upscaled=True)
+        color1 = convert_color(color1, LabColor)
+        color2 = sRGBColor(color2[0], color2[1], color2[2], is_upscaled=True)
+        color2 = convert_color(color2, LabColor)
+        return delta_e_cie2000(color1, color2)
+        #return delta_e_cmc(color1, color2, pl=1, pc=1)
+
+    def __euclidean_distance(self, color1, color2):
         dr = color2[0] - color1[0]
         dg = color2[1] - color1[1]
         db = color2[2] - color1[2]
