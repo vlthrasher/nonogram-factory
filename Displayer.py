@@ -7,7 +7,7 @@ class Displayer:
         self.img = img
         self.ig = ImageGenerator.ImageGenerator()
 
-    def __findDefaultColor(self):
+    def __findDefaultColor(self, level):
         pixels = self.img.load()
         colorCount = {}
         for i in range(self.img.size[0]):
@@ -16,8 +16,12 @@ class Displayer:
                     colorCount[pixels[i,j]] += 1
                 else:
                     colorCount[pixels[i,j]] = 1
-        print(colorCount)
-        return max(colorCount.items(), key=operator.itemgetter(1))[0]
+        sortedCounts = sorted(colorCount.items(), key=lambda kv: (kv[1], kv[0]))
+        print(sortedCounts)
+        index = round((float(level)/5.0)*len(colorCount))-1
+        print(index)
+        print(sortedCounts[index][0])
+        return sortedCounts[index][0]
 
     def __getColumnLabels(self):
         pixels = self.img.load()
@@ -61,13 +65,13 @@ class Displayer:
             labels.append(rowLabel)
         return labels
 
-    def __gatherBorderLabels(self):
-        self.defaultColor = self.__findDefaultColor()
+    def __gatherBorderLabels(self, level):
+        self.defaultColor = self.__findDefaultColor(level)
         #print(self.defaultColor)
         #print("--------------------")
         self.columnLabels = self.__getColumnLabels()
         self.rowLabels = self.__getRowLabels()
 
-    def generatePuzzle(self, colorSet=None):
-        self.__gatherBorderLabels()
+    def generatePuzzle(self, level=3, colorSet=None):
+        self.__gatherBorderLabels(level)
         puzzle = self.ig.generatePuzzle(self.rowLabels, self.columnLabels, self.defaultColor, colorSet)
