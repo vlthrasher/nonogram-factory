@@ -17,10 +17,7 @@ class Displayer:
                 else:
                     colorCount[pixels[i,j]] = 1
         sortedCounts = sorted(colorCount.items(), key=lambda kv: (kv[1], kv[0]))
-        print(sortedCounts)
         index = round((float(level)/5.0)*len(colorCount))-1
-        print(index)
-        print(sortedCounts[index][0])
         return sortedCounts[index][0]
 
     def __getColumnLabels(self):
