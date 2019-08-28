@@ -38,6 +38,25 @@ class ImageGenerator:
 
         return pageWidth, pageHeight
 
+    def __drawGrid_HeavyLines(self):
+        upper = self.grid_ul
+        lower = (upper[0], self.img.size[1]-self.HEIGHT_BUFFER)
+        upper = (upper[0] + (self.BOX_SIZE * 5), upper[1])
+        lower = (lower[0] + (self.BOX_SIZE * 5), lower[1])
+        while upper[0] < self.img.size[0]-self.WIDTH_BUFFER:
+            self.drawer.line([upper, lower], fill=(0,0,0), width = self.BOX_LINE_WEIGHT*3)
+            upper = (upper[0]+(self.BOX_SIZE*5), upper[1])
+            lower = (lower[0]+(self.BOX_SIZE*5), lower[1])
+
+        left = self.grid_ul
+        right = (self.img.size[0]-self.WIDTH_BUFFER, left[1])
+        left = (left[0], left[1] + (self.BOX_SIZE * 5))
+        right = (right[0], right[1] + (self.BOX_SIZE * 5))
+        while left[1] < self.img.size[1]-self.HEIGHT_BUFFER:
+            self.drawer.line([left, right], fill=(0, 0, 0), width=self.BOX_LINE_WEIGHT * 3)
+            left = (left[0], left[1] + (self.BOX_SIZE * 5))
+            right = (right[0], right[1] + (self.BOX_SIZE * 5))
+
     def __drawGrid(self, totalRows, totalColumns, maxRow, maxColumn):
         width = self.img.size[0]
         height = self.img.size[1]
@@ -46,10 +65,11 @@ class ImageGenerator:
         for r in range(totalRows):
             for c in reversed(range(totalColumns)):
                 ul = (lr[0] - self.BOX_SIZE, lr[1] - self.BOX_SIZE)
-                self.drawer.rectangle([ul, lr], fill=(255, 255, 255), outline=(0, 0, 0), width=3)
+                self.drawer.rectangle([ul, lr], fill=(255, 255, 255), outline=(0, 0, 0), width=self.BOX_LINE_WEIGHT)
                 lr = (ul[0], lr[1])
             lr = (width - self.WIDTH_BUFFER, ul[1])
         self.grid_ul = ul
+        self.__drawGrid_HeavyLines()
 
     def __drawRowLabels(self):
         #TODO: Add bolded lines every 5 boxes for separation
@@ -59,7 +79,7 @@ class ImageGenerator:
         fnt = ImageFont.truetype('/Library/Fonts/Arial.ttf', round(.72*self.BOX_SIZE))
         for row in self.rowLabels:
             for rowLab in reversed(row):
-                self.drawer.rectangle([ul, lr], fill=rowLab[0], outline=(0, 0, 0), width=3)
+                self.drawer.rectangle([ul, lr], fill=rowLab[0], outline=(0, 0, 0), width=self.BOX_LINE_WEIGHT)
                 w, h = self.drawer.textsize(str(rowLab[1]), font=fnt)
                 if sum(rowLab[0]) > 382:
                     textColor = (0, 0, 0)
@@ -80,7 +100,7 @@ class ImageGenerator:
         fnt = ImageFont.truetype('/Library/Fonts/Arial.ttf', round(.72*self.BOX_SIZE))
         for column in self.columnLabels:
             for columnLab in reversed(column):
-                self.drawer.rectangle([ul, lr], fill=columnLab[0], outline=(0,0,0), width=3)
+                self.drawer.rectangle([ul, lr], fill=columnLab[0], outline=(0,0,0), width=self.BOX_LINE_WEIGHT)
                 w, h = self.drawer.textsize(str(columnLab[1]), font=fnt)
                 if sum(columnLab[0]) > 382:
                     textColor = (0,0,0)
@@ -117,7 +137,7 @@ class ImageGenerator:
         lr = (ul[0]+width, ul[1]+boxHeight)
         fnt = ImageFont.truetype('/Library/Fonts/Arial.ttf', boxHeight-5)
         for color in allColors:
-            self.drawer.rectangle([ul, lr], fill=color, outline=(255,255,255), width=3)
+            self.drawer.rectangle([ul, lr], fill=color, outline=(255,255,255), width=self.BOX_LINE_WEIGHT)
             if sum(color) > 382:
                 textColor = (0, 0, 0)
             else:
@@ -142,7 +162,6 @@ class ImageGenerator:
 
     def __drawPuzzle(self, pageSize, colorSet=None):
         emptyRows, emptyColumns, maxClueRows, maxClueColumns = self.__findGridDims()
-        print(maxClueRows, maxClueColumns)
         w, h = self.__getImageSize(emptyColumns+maxClueRows, emptyRows+maxClueColumns, pageSize)
         self.img = Image.new('RGB', (w,h), color=(255, 255, 255))
         print(self.img.size)
@@ -155,6 +174,7 @@ class ImageGenerator:
         self.HEIGHT_BUFFER = 200
         self.BOX_SIZE = 100
         self.PUZZLE_BUFFER = 100
+        self.BOX_LINE_WEIGHT = 4
         self.rowLabels = rowLabels
         self.columnLabels = columnLabels
         self.defaultColor = defaultColor
