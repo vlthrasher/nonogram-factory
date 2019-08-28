@@ -69,6 +69,6 @@ class Displayer:
         self.columnLabels = self.__getColumnLabels()
         self.rowLabels = self.__getRowLabels()
 
-    def generatePuzzle(self, level=3, colorSet=None):
+    def generatePuzzle(self, pageSize, level=3, colorSet=None):
         self.__gatherBorderLabels(level)
-        puzzle = self.ig.generatePuzzle(self.rowLabels, self.columnLabels, self.defaultColor, colorSet)
+        puzzle = self.ig.generatePuzzle(self.rowLabels, self.columnLabels, self.defaultColor, pageSize, colorSet)

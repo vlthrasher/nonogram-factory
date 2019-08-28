@@ -6,18 +6,37 @@ class ImageGenerator:
     def __init__(self):
         pass
 
-    def __findDims(self):
-        maxRow = 0
-        maxColumn = 0
+    def __findGridDims(self):
+        maxClueRows = 0
+        maxClueColumns = 0
         for row in self.rowLabels:
-            if len(row) > maxRow:
-                maxRow = len(row)
+            if len(row) > maxClueRows:
+                maxClueRows = len(row)
         for column in self.columnLabels:
-            if len(column) > maxColumn:
-                maxColumn = len(column)
-        totalRows = len(self.rowLabels)
-        totalColumns = len(self.columnLabels)
-        return totalRows, totalColumns, maxRow, maxColumn
+            if len(column) > maxClueColumns:
+                maxClueColumns = len(column)
+        emptyRows = len(self.rowLabels)
+        emptyColumns = len(self.columnLabels)
+        return emptyRows, emptyColumns, maxClueRows, maxClueColumns
+
+    def __getImageSize(self, gridWidth, gridHeight, pageSize):
+        minWidth = ((gridWidth * self.BOX_SIZE) + 2 * self.WIDTH_BUFFER)
+        minHeight = ((gridHeight * self.BOX_SIZE) + 2 * self.HEIGHT_BUFFER)
+        if minWidth < minHeight:
+            pageWidthDim = min(pageSize)
+            pageHeightDim = max(pageSize)
+        else:
+            pageWidthDim = max(pageSize)
+            pageHeightDim = min(pageSize)
+
+        if (pageWidthDim*minHeight)/float(pageHeightDim) < minWidth:
+            pageHeight = round((pageHeightDim*minWidth)/float(pageWidthDim))
+            pageWidth = minWidth
+        else:
+            pageWidth = round((pageWidthDim*minHeight)/float(pageHeightDim))
+            pageHeight = minHeight
+
+        return pageWidth, pageHeight
 
     def __drawGrid(self, totalRows, totalColumns, maxRow, maxColumn):
         width = self.img.size[0]
@@ -37,7 +56,7 @@ class ImageGenerator:
         ul = self.grid_ul
         ul = (ul[0]- self.BOX_SIZE, ul[1])
         lr = (ul[0] + self.BOX_SIZE, ul[1] + self.BOX_SIZE)
-        fnt = ImageFont.truetype('/Library/Fonts/Arial.ttf', 36)
+        fnt = ImageFont.truetype('/Library/Fonts/Arial.ttf', round(.72*self.BOX_SIZE))
         for row in self.rowLabels:
             for rowLab in reversed(row):
                 self.drawer.rectangle([ul, lr], fill=rowLab[0], outline=(0, 0, 0), width=3)
@@ -58,7 +77,7 @@ class ImageGenerator:
         ul = self.grid_ul
         ul = (ul[0], ul[1]-self.BOX_SIZE)
         lr = (ul[0]+self.BOX_SIZE, ul[1]+self.BOX_SIZE)
-        fnt = ImageFont.truetype('/Library/Fonts/Arial.ttf', 36)
+        fnt = ImageFont.truetype('/Library/Fonts/Arial.ttf', round(.72*self.BOX_SIZE))
         for column in self.columnLabels:
             for columnLab in reversed(column):
                 self.drawer.rectangle([ul, lr], fill=columnLab[0], outline=(0,0,0), width=3)
@@ -121,26 +140,25 @@ class ImageGenerator:
             ul = (ul[0], ul[1]+boxHeight)
             lr = (lr[0], lr[1]+boxHeight)
 
-    def __drawPuzzle(self, colorSet=None):
-        totalRows, totalColumns, maxRow, maxColumn = self.__findDims()
-        print(maxRow, maxColumn)
-        self.img = Image.new('RGB', ((((totalColumns + maxRow) * self.BOX_SIZE) + 2 * self.WIDTH_BUFFER),
-                                     ((totalRows + maxColumn) * self.BOX_SIZE) + 2 * self.HEIGHT_BUFFER),
-                             color=(255, 255, 255))
+    def __drawPuzzle(self, pageSize, colorSet=None):
+        emptyRows, emptyColumns, maxClueRows, maxClueColumns = self.__findGridDims()
+        print(maxClueRows, maxClueColumns)
+        w, h = self.__getImageSize(emptyColumns+maxClueRows, emptyRows+maxClueColumns, pageSize)
+        self.img = Image.new('RGB', (w,h), color=(255, 255, 255))
         print(self.img.size)
-        self.__drawGrid(totalRows, totalColumns, maxRow, maxColumn)
-        self.__drawLabels(totalRows, totalColumns, maxRow, maxColumn)
+        self.__drawGrid(emptyRows, emptyColumns, maxClueRows, maxClueColumns)
+        self.__drawLabels(emptyRows, emptyColumns, maxClueRows, maxClueColumns)
         self.__drawColorKey(colorSet)
 
-    def generatePuzzle(self, rowLabels, columnLabels, defaultColor, colorSet=None):
-        self.WIDTH_BUFFER = 100
-        self.HEIGHT_BUFFER = 100
-        self.BOX_SIZE = 50
-        self.PUZZLE_BUFFER = 50
+    def generatePuzzle(self, rowLabels, columnLabels, defaultColor, pageSize, colorSet=None):
+        self.WIDTH_BUFFER = 200
+        self.HEIGHT_BUFFER = 200
+        self.BOX_SIZE = 100
+        self.PUZZLE_BUFFER = 100
         self.rowLabels = rowLabels
         self.columnLabels = columnLabels
         self.defaultColor = defaultColor
-        self.__drawPuzzle(colorSet)
+        self.__drawPuzzle(pageSize, colorSet)
 
 
         """

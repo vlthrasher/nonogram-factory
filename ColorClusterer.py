@@ -143,4 +143,3 @@ class ColorClusterer:
                     newClusters[(mean(r), mean(g), mean(b))] = []
 
         return newClusters
-        # TODO: make sure colors are not too close together
