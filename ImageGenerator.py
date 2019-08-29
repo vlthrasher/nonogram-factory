@@ -72,7 +72,6 @@ class ImageGenerator:
         self.__drawGrid_HeavyLines()
 
     def __drawRowLabels(self):
-        #TODO: Add bolded lines every 5 boxes for separation
         ul = self.grid_ul
         ul = (ul[0]- self.BOX_SIZE, ul[1])
         lr = (ul[0] + self.BOX_SIZE, ul[1] + self.BOX_SIZE)
@@ -93,7 +92,6 @@ class ImageGenerator:
             lr = (ul[0] + self.BOX_SIZE, ul[1] + self.BOX_SIZE)
 
     def __drawColumnLabels(self):
-        #TODO: Add bolded lines every 5 boxes for separation
         ul = self.grid_ul
         ul = (ul[0], ul[1]-self.BOX_SIZE)
         lr = (ul[0]+self.BOX_SIZE, ul[1]+self.BOX_SIZE)
@@ -128,35 +126,41 @@ class ImageGenerator:
                 allColors.add(lab[0])
         return allColors
 
-    def __drawColorKey(self, colorSet=None):
+    def __getTextColor(self, color):
+        if sum(color) > 382:
+            return (0,0,0)
+        else:
+            return (255,255,255)
+
+    def __drawColorKey(self, color, ul, lr, boxWidth, boxHeight, colorSet=None):
+        fnt = ImageFont.truetype('/Library/Fonts/Arial.ttf', round(boxHeight*.75))
+        textColor = self.__getTextColor(color)
+        self.drawer.rectangle([ul, lr], fill=color, outline=textColor, width=self.BOX_LINE_WEIGHT)
+        if colorSet:
+            if color==self.defaultColor:
+                colorName = "*" + colorSet.getColorName(color)
+            else:
+                colorName = colorSet.getColorName(color)
+        else:
+            if color==self.defaultColor:
+                colorName = "*"
+            else:
+                colorName = ""
+        w, h = self.drawer.textsize(colorName, font=fnt)
+        while w >= boxWidth*.9:
+            fnt = ImageFont.truetype('/Library/Fonts/Arial.ttf', fnt.size-5)
+            w, h = self.drawer.textsize(colorName, font=fnt)
+        self.drawer.text((ul[0] + ((boxWidth - w) /2), ul[1] + ((boxHeight - h) / 2)), colorName, font=fnt, fill=textColor, align="center")
+
+    def __drawColorKeys(self, colorSet=None):
         width = self.grid_ul[0]-self.WIDTH_BUFFER-self.PUZZLE_BUFFER
         height = self.grid_ul[1]-self.HEIGHT_BUFFER-self.PUZZLE_BUFFER
         allColors = self.__getAllColors()
         boxHeight = floor(float(height)/float(len(allColors)))
         ul = (self.WIDTH_BUFFER, self.HEIGHT_BUFFER)
         lr = (ul[0]+width, ul[1]+boxHeight)
-        fnt = ImageFont.truetype('/Library/Fonts/Arial.ttf', boxHeight-5)
         for color in allColors:
-            self.drawer.rectangle([ul, lr], fill=color, outline=(255,255,255), width=self.BOX_LINE_WEIGHT)
-            if sum(color) > 382:
-                textColor = (0, 0, 0)
-            else:
-                textColor = (255, 255, 255)
-            # TODO: change font size if the color name is too long
-            if colorSet:
-                if color == self.defaultColor:
-                    w, h = self.drawer.textsize("*"+colorSet.getColorName(color), font=fnt)
-                    self.drawer.text((ul[0] + ((width - w) / 2), ul[1] + ((boxHeight - h) / 2)),
-                                     "*"+colorSet.getColorName(color), font=fnt, fill=textColor, align="center")
-                else:
-                    w, h = self.drawer.textsize(colorSet.getColorName(color), font=fnt)
-                    self.drawer.text((ul[0] + ((width - w) / 2), ul[1] + ((boxHeight - h) / 2)),
-                                     colorSet.getColorName(color), font=fnt, fill=textColor, align="center")
-            else:
-                if color == self.defaultColor:
-                    w, h = self.drawer.textsize("*", font=fnt)
-                    self.drawer.text((ul[0] + ((width - w) / 2), ul[1] + ((boxHeight - h) / 2)), "*",
-                                     font=fnt, fill=textColor, align="center")
+            self.__drawColorKey(color, ul, lr, width, boxHeight, colorSet)
             ul = (ul[0], ul[1]+boxHeight)
             lr = (lr[0], lr[1]+boxHeight)
 
@@ -167,7 +171,7 @@ class ImageGenerator:
         print(self.img.size)
         self.__drawGrid(emptyRows, emptyColumns, maxClueRows, maxClueColumns)
         self.__drawLabels(emptyRows, emptyColumns, maxClueRows, maxClueColumns)
-        self.__drawColorKey(colorSet)
+        self.__drawColorKeys(colorSet)
 
     def generatePuzzle(self, rowLabels, columnLabels, defaultColor, pageSize, colorSet=None):
         self.WIDTH_BUFFER = 200
