@@ -1,5 +1,6 @@
-#Crayola rgb colors based on https://ipfs.io/ipfs/QmXoypizjW3WknFiJnKLwHCnL72vedxjQkDDP1mXWo6uco/wiki/List_of_Crayola_colored_pencil_colors.html
+#Crayola rgb colors based on images from each pack on the Crayola.com website
 
+#parent class all other colorsets inherit from
 class ColorSet:
     def __init__(self):
         self.colors = {}

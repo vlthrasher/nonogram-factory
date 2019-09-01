@@ -1,7 +1,9 @@
 from PIL import Image
 import ColorClusterer
 
-
+#Takes an image and adjusts it so it matches a completed puzzle
+#The puzzle can be uniquly derived from the returned image
+#One public method: adjustImage
 class ImageAdjuster:
     def __init__(self):
         self.clusterer = ColorClusterer.ColorClusterer()
@@ -27,6 +29,7 @@ class ImageAdjuster:
         img = img.resize((newWidth, newHeight))
         return img
 
+    #recolors each pixel in the image to one of the clusters derived
     def __recolorImage(self, img, clusters):
         pixels = img.load()
         for k in clusters:

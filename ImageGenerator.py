@@ -173,6 +173,7 @@ class ImageGenerator:
         self.__drawLabels(emptyRows, emptyColumns, maxClueRows, maxClueColumns)
         self.__drawColorKeys(colorSet)
 
+    #Uses a set of constants and parameters to form an image of the puzzle
     def generatePuzzle(self, rowLabels, columnLabels, defaultColor, pageSize, colorSet=None):
         self.WIDTH_BUFFER = 200
         self.HEIGHT_BUFFER = 200
@@ -183,11 +184,5 @@ class ImageGenerator:
         self.columnLabels = columnLabels
         self.defaultColor = defaultColor
         self.__drawPuzzle(pageSize, colorSet)
-
-
-        """
-        d.line([(500, 300), (500, 900)], fill=(0, 0, 0), width=3)
-        d.rectangle([(100, 100), (150, 150)], fill=(255, 0, 0), outline=(0, 0, 0), width=3)
-        """
         self.img.show()
         return self.img

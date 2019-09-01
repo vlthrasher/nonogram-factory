@@ -10,4 +10,4 @@ if __name__ == "__main__":
     img = adjuster.adjustImage(FILENAME, maxSize=20, clusterCount=7, iterations=5, colorSet=colorSet)
     img.show()
     displayer = Displayer.Displayer(img)
-    displayer.generatePuzzle((8.5, 11), level=1, colorSet=colorSet)
+    puzzle = displayer.generatePuzzle(pageSize=(8.5, 11), level=1, colorSet=colorSet)

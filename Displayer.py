@@ -69,6 +69,8 @@ class Displayer:
         self.columnLabels = self.__getColumnLabels()
         self.rowLabels = self.__getRowLabels()
 
+    #Creates a puzzle from an image by deriving the default color and number clues and forming an image
     def generatePuzzle(self, pageSize, level=3, colorSet=None):
         self.__gatherBorderLabels(level)
         puzzle = self.ig.generatePuzzle(self.rowLabels, self.columnLabels, self.defaultColor, pageSize, colorSet)
+        return puzzle
